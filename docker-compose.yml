@@ -1,0 +1,23 @@
+version: '3.7'
+
+services:
+  site:
+    depends_on:
+      - users
+    build:
+      context: ./site
+    image: workspace.site.phalcon
+    volumes:
+      - ./site:/app
+    ports:
+      - 80:80
+    links:
+      - users:users
+
+  users:
+    build:
+      context: ./users
+    image: workspace.users.phalcon
+    volumes:
+      - ./users:/app
+    command: /bin/sh -c "/usr/src/phalcon-devtools/phalcon migration run --log-in-db && php -S 0.0.0.0:80 -t public .htrouter.php"
